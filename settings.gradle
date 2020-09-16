@@ -1,0 +1,6 @@
+rootProject.name = 'demo'
+
+include 'auth'
+include 'c_r_user'
+include 'u_d_user'
+
