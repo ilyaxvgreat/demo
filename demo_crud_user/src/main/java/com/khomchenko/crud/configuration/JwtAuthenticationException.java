@@ -1,4 +1,4 @@
-package com.khomchenko.info.configuration;
+package com.khomchenko.crud.configuration;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

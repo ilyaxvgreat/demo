@@ -1,4 +1,4 @@
-package com.khomchenko.info.dto;
+package com.khomchenko.crud.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

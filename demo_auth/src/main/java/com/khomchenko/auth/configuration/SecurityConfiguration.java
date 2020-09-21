@@ -30,17 +30,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Value("${spring.security.allowedOrigins.value}")
-    private String allowedOrigins;
+    @Value("${spring.security.allowedOrigins.value.crud.api.url}")
+    private String crudApiUrl;
+
+    @Value("${spring.security.allowedOrigins.value.info.api.url}")
+    private String infoApiUrl;
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
+                registry.addMapping("/*")
                         .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS")
-                        .allowedOrigins(allowedOrigins).allowCredentials(true);
+                        .allowedOrigins(crudApiUrl);
+                registry.addMapping("/*")
+                        .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS")
+                        .allowedOrigins(infoApiUrl);
             }
         };
     }
@@ -53,7 +59,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
                 .antMatchers("/auth/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/users/*").permitAll()
+                .antMatchers("/auth/logout").permitAll()
+                .antMatchers(HttpMethod.GET, "/users*").permitAll()
                 .antMatchers(HttpMethod.GET, "/exps*").permitAll()
                 .anyRequest().authenticated()
                 .and()

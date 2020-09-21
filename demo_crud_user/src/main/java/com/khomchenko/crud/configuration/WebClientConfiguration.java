@@ -1,4 +1,4 @@
-package com.khomchenko.info.configuration;
+package com.khomchenko.crud.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;

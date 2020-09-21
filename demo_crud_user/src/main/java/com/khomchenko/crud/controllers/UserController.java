@@ -1,6 +1,6 @@
-package com.khomchenko.info.controllers;
+package com.khomchenko.crud.controllers;
 
-import com.khomchenko.info.dto.UserDto;
+import com.khomchenko.crud.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,6 @@ public class UserController {
     private final WebClient.Builder webClientBuilder;
 
     @GetMapping("/{id}")
-    @Secured("ROLE_ADMIN")
     public Object getUserById(@PathVariable Long id, @RequestHeader(value = "Authorization") String jwt) {
         try {
             return webClientBuilder.build()
@@ -35,7 +34,6 @@ public class UserController {
     }
 
     @GetMapping
-    @Secured("ROLE_ADMIN")
     public String test() {
         return "good";
     }

@@ -1,7 +1,7 @@
-package com.khomchenko.info.controllers;
+package com.khomchenko.crud.controllers;
 
-import com.khomchenko.info.dto.AuthenticationsResponseDto;
-import com.khomchenko.info.dto.UserDto;
+import com.khomchenko.crud.dto.AuthenticationsResponseDto;
+import com.khomchenko.crud.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping( produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class LoginController {
 
@@ -27,9 +27,8 @@ public class LoginController {
         this.webClientBuilder = webClientBuilder;
     }
 
-    @PostMapping
+    @PostMapping(path = "/login")
     public Object login(@RequestBody UserDto userDto) {
-        log.info("User making login: " + userDto.getName());
         try {
             Mono<AuthenticationsResponseDto> authenticationsResponseDtoMono = webClientBuilder.build()
                     .post()
