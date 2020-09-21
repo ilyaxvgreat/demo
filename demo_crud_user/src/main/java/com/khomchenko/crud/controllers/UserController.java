@@ -1,19 +1,16 @@
 package com.khomchenko.crud.controllers;
 
 import com.khomchenko.crud.dto.UserDto;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @RestController
 @RequestMapping("/users")
-@AllArgsConstructor
 @Slf4j
 public class UserController {
 
@@ -24,6 +21,10 @@ public class UserController {
     private String authorizationHeader;
 
     private final WebClient.Builder webClientBuilder;
+
+    public UserController(WebClient.Builder webClientBuilder) {
+        this.webClientBuilder = webClientBuilder;
+    }
 
     @GetMapping("/{id}")
     public Object getUserById(@PathVariable Long id, @RequestHeader(value = "Authorization") String jwt) {
