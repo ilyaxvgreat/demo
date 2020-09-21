@@ -35,17 +35,15 @@ public class JwtTokenFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        log.info("checking request");
-        log.info(httpServletRequest.getHeader(authorizationHeader));
         String token = httpServletRequest.getHeader("Authorization");
         if (httpServletRequest.getHeader(authorizationHeader) != null
                 && validateToken(token)) {
             log.info("checking jwt with header");
             chain.doFilter(request, response);
-            return;
+        } else {
+            log.info("without header");
+            throw new JwtAuthenticationException("jwt token is expired or invalid", HttpStatus.UNAUTHORIZED);
         }
-        log.info("without header");
-        chain.doFilter(request, response);
     }
 
     public boolean validateToken(String token) {

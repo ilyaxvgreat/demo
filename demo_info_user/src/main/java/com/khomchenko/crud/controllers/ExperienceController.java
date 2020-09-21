@@ -29,7 +29,7 @@ public class ExperienceController {
         return webClientBuilder.build()
                 .get()
                 .uri(apiUrl)
-                .header("Authorization", jwt)
+                .header(authorizationHeader, jwt)
                 .retrieve()
                 .toEntityList(ExperienceDto.class)
                 .block().getBody()

@@ -3,6 +3,7 @@ package com.khomchenko.crud.controllers;
 import com.khomchenko.crud.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -16,6 +17,12 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Slf4j
 public class UserController {
 
+    @Value("${users.api.url}")
+    private String apiUrl;
+
+    @Value("${jwt.header}")
+    private String authorizationHeader;
+
     private final WebClient.Builder webClientBuilder;
 
     @GetMapping("/{id}")
@@ -23,8 +30,8 @@ public class UserController {
         try {
             return webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8081/users/" + id)
-                    .header("Authorization", jwt)
+                    .uri(apiUrl + "/" + id)
+                    .header(authorizationHeader, jwt)
                     .retrieve()
                     .bodyToMono(UserDto.class)
                     .block();
