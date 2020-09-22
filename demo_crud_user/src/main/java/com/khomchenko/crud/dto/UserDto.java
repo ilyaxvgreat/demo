@@ -14,4 +14,5 @@ public class UserDto {
     private boolean isAccountNonLocked;
     private boolean isCredentialsNonExpired;
     private boolean isEnabled;
+    private UserExperienceDto experience;
 }

@@ -4,3 +4,8 @@ include 'demo_auth'
 include 'demo_crud_user'
 include 'demo_info_user'
 
+// javax почитать про это !!!!!
+
+// вынести в отдельный класс запросы !!!!!
+
+

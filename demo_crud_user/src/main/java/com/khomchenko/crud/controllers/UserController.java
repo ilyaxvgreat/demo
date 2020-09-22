@@ -1,6 +1,8 @@
 package com.khomchenko.crud.controllers;
 
+import com.khomchenko.crud.configuration.MicroserviceRequest;
 import com.khomchenko.crud.dto.UserDto;
+import com.khomchenko.crud.dto.UserExperienceDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -15,49 +17,40 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 public class UserController {
 
     @Value("${users.api.url}")
-    private String apiUrl;
+    private String userApiUrl;
 
-    @Value("${jwt.header}")
-    private String authorizationHeader;
+    @Value("${users.info.api.url}")
+    private String usersInfoApiUrl;
+
 
     private final WebClient.Builder webClientBuilder;
 
-    public UserController(WebClient.Builder webClientBuilder) {
+    private final MicroserviceRequest microserviceRequest;
+
+    public UserController(WebClient.Builder webClientBuilder, MicroserviceRequest microserviceRequest) {
         this.webClientBuilder = webClientBuilder;
-    }
-
-    @GetMapping("/{id}")
-    public Object getUserById(@PathVariable Long id, @RequestHeader(value = "Authorization") String jwt) {
-        try {
-            return webClientBuilder.build()
-                    .get()
-                    .uri(apiUrl + "/" + id)
-                    .header(authorizationHeader, jwt)
-                    .retrieve()
-                    .bodyToMono(UserDto.class)
-                    .block();
-        } catch (WebClientResponseException e) {
-            return new ResponseEntity<>("invalid name/password", HttpStatus.FORBIDDEN);
-        }
-    }
-
-    @GetMapping
-    public String test() {
-        return "good";
+        this.microserviceRequest = microserviceRequest;
     }
 
 
-    @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable Long id, @RequestHeader(value = "Authorization") String jwt) {
-        try {
-            webClientBuilder.build()
-                    .delete()
-                    .uri("http://localhost:8081/users/" + id)
-                    .header("Authorization", jwt)
-                    .retrieve();
-        } catch (WebClientResponseException e) {
-            log.error("wrong", new Exception());
-        }
+    @GetMapping("/{userId}/experiences")
+    public UserDto getUserByIdWithExperience(@PathVariable Long userId, @RequestHeader(value = "Authorization") String jwt) {
+        UserExperienceDto experienceDto = (UserExperienceDto) microserviceRequest
+                .sendGetRequest(usersInfoApiUrl + userId, jwt, UserExperienceDto.class);
+        UserDto userDto = (UserDto) microserviceRequest.sendGetRequest(userApiUrl + userId, jwt, UserDto.class);
+        userDto.setExperience(experienceDto);
+        return userDto;
+    }
+
+    @GetMapping("/{userId}")
+    public UserDto getUserById(@PathVariable Long userId, @RequestHeader(value = "Authorization") String jwt) {
+        return (UserDto) microserviceRequest.sendGetRequest(userApiUrl + userId, jwt, UserDto.class);
+
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUserById(@PathVariable Long userId, @RequestHeader(value = "Authorization") String jwt) {
+        microserviceRequest.sendDeleteRequest(userApiUrl + userId, jwt);
     }
 
 }
