@@ -13,4 +13,5 @@ public interface ExperienceService {
 
     Experience save(Experience experience);
 
+    List<Experience> getExperienceByUserId(Long userId);
 }

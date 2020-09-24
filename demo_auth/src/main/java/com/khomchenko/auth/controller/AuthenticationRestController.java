@@ -32,12 +32,12 @@ public class AuthenticationRestController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDto requestDto) {
         try {
-            String name = requestDto.getName();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getName(), requestDto.getPassword()));
-            User user = userRepository.findByName(requestDto.getName());
-            String token = jwtTokenProvider.createToken(requestDto.getName(), user.getAuthorities());
+            String name = requestDto.getUsername();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
+            User user = userRepository.findByUsername(requestDto.getUsername());
+            String token = jwtTokenProvider.createToken(requestDto.getUsername(), user.getAuthorities());
             Map<Object, Object> response = new HashMap<>();
-            response.put("name", name);
+            response.put("username", name);
             response.put("token", token);
             System.out.println(token);
             return ResponseEntity.ok(response);

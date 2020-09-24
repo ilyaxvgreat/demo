@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ExperienceController {
 
-    private final UserService userService;
     private final ExperienceService experienceService;
 
     @GetMapping
@@ -28,7 +27,7 @@ public class ExperienceController {
     }
 
     @PostMapping
-    public Experience saveExperience(Experience experience) {
+    public Experience saveExperience(@RequestBody Experience experience) {
         return experienceService.save(experience);
     }
 

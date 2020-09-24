@@ -4,12 +4,11 @@ import com.khomchenko.auth.model.Experience;
 import com.khomchenko.auth.repositories.ExperienceRepository;
 import com.khomchenko.auth.services.exceptions.ExperienceAlreadyExistException;
 import com.khomchenko.auth.services.exceptions.ExperienceNotFoundException;
-import com.khomchenko.auth.services.exceptions.UserAlreadyExistException;
-import com.khomchenko.auth.services.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -36,8 +35,15 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public Experience save(Experience experience) {
-        experienceRepository.findById(experience.getId())
-                .orElseThrow(ExperienceAlreadyExistException::new);
+        Optional<Experience> byId = experienceRepository.findById(experience.getId());
+        if (byId.isPresent()){
+            throw new ExperienceAlreadyExistException();
+        }
         return experienceRepository.save(experience);
+    }
+
+    @Override
+    public List<Experience> getExperienceByUserId(Long userId) {
+        return experienceRepository.getExperienceByUserId(userId);
     }
 }

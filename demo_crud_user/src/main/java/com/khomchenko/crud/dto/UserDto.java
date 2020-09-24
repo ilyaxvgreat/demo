@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Data
 public class UserDto {
-    private String name;
+    private String username;
     private String password;
     private String lastName;
     private Set<Authority> authorities;

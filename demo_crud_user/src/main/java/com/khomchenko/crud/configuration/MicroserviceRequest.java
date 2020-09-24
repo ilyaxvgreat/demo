@@ -10,4 +10,6 @@ public interface MicroserviceRequest {
     AuthenticationsResponseDto sendPostRequestForLogin(UserDto userDto);
 
     void sendDeleteRequest(String url, String jwt);
+
+    UserDto sendPostRequest(String url, String jwt,UserDto userDto);
 }

@@ -3,6 +3,7 @@ package com.khomchenko.auth.controller;
 import com.khomchenko.auth.model.User;
 import com.khomchenko.auth.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,16 +18,17 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(User user) {
+    public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
     @PutMapping("/{userId}")
-    public User updateUser(@PathVariable Long userId, User user) {
+    public User updateUser(@PathVariable Long userId, @RequestBody User user) {
         return userService.updateUser(userId, user);
     }
 
     @DeleteMapping("/{userId}")
+    @Secured("ROLE_ADMIN")
     public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
     }

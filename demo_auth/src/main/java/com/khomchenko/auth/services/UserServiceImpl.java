@@ -1,6 +1,7 @@
 package com.khomchenko.auth.services;
 
 import com.khomchenko.auth.model.User;
+import com.khomchenko.auth.services.exceptions.EmptyFieldException;
 import com.khomchenko.auth.services.exceptions.UserAlreadyExistException;
 import com.khomchenko.auth.services.exceptions.UserNotFoundException;
 import com.khomchenko.auth.repositories.UserRepository;
@@ -25,14 +26,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return findAll().stream().filter(user -> user.getName().equals(username))
+        return findAll().stream().filter(user -> user.getUsername().equals(username))
                 .findAny().orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public User createUser(User user) {
-        findAll().stream().filter(user1 -> user1.getName().equals(user.getName()))
-                .findAny().orElseThrow(UserAlreadyExistException::new);
+        System.out.println(user.getUsername());
+//        findAll().stream().filter(userFromDB -> user.getUsername().equals(userFromDB.getUsername()))
+//                .findAny().orElseThrow(UserAlreadyExistException::new);
         return userRepository.save(user);
     }
 
@@ -48,6 +50,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User updateUser(Long id, User user) {
-        return null;
+        User currentUser = getById(id);
+        if ("".equals(user.getUsername())) {
+            throw new EmptyFieldException();
+        }
+        System.out.println(user.getUsername());
+        currentUser.setUsername(user.getUsername());
+        return userRepository.save(currentUser);
     }
 }

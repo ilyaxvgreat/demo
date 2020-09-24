@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/exps")
+@RequestMapping("/experiences")
 public class ExperienceController {
 
     @Value("${experience.api.url}")
@@ -19,9 +19,14 @@ public class ExperienceController {
     }
 
     @GetMapping("/{id}")
-    public ExperienceDto getById(@PathVariable Long id, @RequestHeader("Authorization") String jwt) {
-        return (ExperienceDto) microserviceRequest
-                .sendGetRequest(apiUrl + id, jwt, ExperienceDto.class);
+    public Object getById(@PathVariable("id") Long id, @RequestHeader("Authorization") String jwt) {
+        return microserviceRequest
+                .sendGetRequest(apiUrl + id, jwt);
+    }
+
+    @PostMapping
+    public Object save(@RequestBody ExperienceDto experienceDto, @RequestHeader("Authorization") String jwt) {
+        return microserviceRequest.sendPostRequest(jwt, experienceDto);
     }
 
 }

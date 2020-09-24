@@ -17,6 +17,9 @@ public class MicroserviceRequestImpl implements MicroserviceRequest {
     @Value("${login.service.url}")
     private String loginUrlApi;
 
+    @Value("${users.api.url}")
+    private String userApiUrl;
+
     private final WebClient.Builder webClientBuilder;
 
     public MicroserviceRequestImpl(WebClient.Builder webClientBuilder) {
@@ -35,7 +38,7 @@ public class MicroserviceRequestImpl implements MicroserviceRequest {
     }
 
     @Override
-    public AuthenticationsResponseDto sendPostRequestForLogin(UserDto userDto){
+    public AuthenticationsResponseDto sendPostRequestForLogin(UserDto userDto) {
         return webClientBuilder.build()
                 .post()
                 .uri(loginUrlApi)
@@ -46,11 +49,23 @@ public class MicroserviceRequestImpl implements MicroserviceRequest {
     }
 
     @Override
-    public void sendDeleteRequest(String url, String jwt){
+    public void sendDeleteRequest(String url, String jwt) {
         webClientBuilder.build()
                 .delete()
                 .uri(url)
                 .header(authorizationHeader, jwt)
-                .retrieve();
+                .retrieve().bodyToMono(Void.class).block();
+    }
+
+    @Override
+    public UserDto sendPostRequest(String url,String jwt, UserDto userDto) {
+        return webClientBuilder.build()
+                .post()
+                .uri(userApiUrl)
+                .header(authorizationHeader,jwt)
+                .body(BodyInserters.fromValue(userDto))
+                .retrieve()
+                .bodyToMono(UserDto.class)
+                .block();
     }
 }
