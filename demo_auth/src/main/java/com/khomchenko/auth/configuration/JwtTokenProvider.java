@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtTokenProvider {
 
-    private final UserServiceImpl userDetailsService;
+    private final transient UserServiceImpl userDetailsService;
 
     @Value("${jwt.secret}")
-    private String secretKey;
+    private transient String secretKey;
 
     @Value("${jwt.header}")
-    private String authorizationHeader;
+    private transient String authorizationHeader;
 
     public JwtTokenProvider(@Qualifier("userServiceImpl") UserServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;

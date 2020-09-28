@@ -7,19 +7,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
 
     @Value("${users.api.url}")
-    private String userApiUrl;
+    private transient String userApiUrl;
 
     @Value("${users.info.api.url}")
-    private String usersInfoApiUrl;
+    private transient String usersInfoApiUrl;
 
 
-    private final MicroserviceRequest microserviceRequest;
+    private transient final MicroserviceRequest microserviceRequest;
 
     public UserController(MicroserviceRequest microserviceRequest) {
         this.microserviceRequest = microserviceRequest;
@@ -28,10 +32,10 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public UserDto getUserByIdWithExperience(@PathVariable Long userId, @RequestHeader(value = "Authorization") String jwt) {
-        UserExperienceDto experienceDto = (UserExperienceDto) microserviceRequest
-                .sendGetRequest(usersInfoApiUrl + userId, jwt, UserExperienceDto.class);
+        List<UserExperienceDto> userExperienceDtos = microserviceRequest
+                .sendGetListRequest(usersInfoApiUrl + userId, jwt);
         UserDto userDto = (UserDto) microserviceRequest.sendGetRequest(userApiUrl + userId, jwt, UserDto.class);
-        userDto.setExperience(experienceDto);
+        userDto.setExperience(userExperienceDtos);
         return userDto;
     }
 

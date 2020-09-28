@@ -7,6 +7,8 @@ import org.springframework.security.core.AuthenticationException;
 @Getter
 public class JwtAuthenticationException extends AuthenticationException {
 
+    private static final long serialVersionUID = 42L;
+
     private HttpStatus httpStatus;
 
     public JwtAuthenticationException(String msg) {

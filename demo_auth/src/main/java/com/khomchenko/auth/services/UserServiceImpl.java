@@ -1,5 +1,7 @@
 package com.khomchenko.auth.services;
 
+import com.khomchenko.auth.model.Authority;
+import com.khomchenko.auth.model.Role;
 import com.khomchenko.auth.model.User;
 import com.khomchenko.auth.services.exceptions.EmptyFieldException;
 import com.khomchenko.auth.services.exceptions.UserAlreadyExistException;
@@ -11,13 +13,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service("userServiceImpl")
 @AllArgsConstructor
 public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepository;
+    private final RoleService roleService;
 
     @Override
     public List<User> findAll() {
@@ -32,29 +35,37 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User createUser(User user) {
-        System.out.println(user.getUsername());
-//        findAll().stream().filter(userFromDB -> user.getUsername().equals(userFromDB.getUsername()))
-//                .findAny().orElseThrow(UserAlreadyExistException::new);
+        findAll().stream().filter(userFromDB -> user.getUsername().equals(userFromDB.getUsername()))
+                .findAny().ifPresent(s -> {
+            throw new UserAlreadyExistException();
+        });
+        user.setAuthorities(Set.of(roleService.getDefaultRole()));
         return userRepository.save(user);
     }
 
     @Override
     public User getById(Long id) {
-        return userRepository.getOne(id);
+        return userRepository.findAll()
+                .stream().filter(user -> user.getId().equals(id)).findAny()
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public void deleteUser(Long id) {
+        userRepository.findAll()
+                .stream().filter(user -> user.getId().equals(id)).findAny()
+                .orElseThrow(UserNotFoundException::new);
         userRepository.deleteById(id);
     }
 
     @Override
     public User updateUser(Long id, User user) {
-        User currentUser = getById(id);
         if ("".equals(user.getUsername())) {
             throw new EmptyFieldException();
         }
-        System.out.println(user.getUsername());
+        User currentUser = userRepository.findAll()
+                .stream().filter(userFromRepo -> userFromRepo.getId().equals(id)).findAny()
+                .orElseThrow(UserNotFoundException::new);
         currentUser.setUsername(user.getUsername());
         return userRepository.save(currentUser);
     }

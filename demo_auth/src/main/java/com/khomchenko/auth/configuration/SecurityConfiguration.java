@@ -18,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final JwtConfigurer jwtConfigurer;
+    private final transient JwtConfigurer jwtConfigurer;
 
     public SecurityConfiguration(JwtConfigurer jwtConfigurer) {
         this.jwtConfigurer = jwtConfigurer;
@@ -31,10 +31,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Value("${spring.security.allowedOrigins.value.crud.api.url}")
-    private String crudApiUrl;
+    private transient String crudApiUrl;
 
     @Value("${spring.security.allowedOrigins.value.info.api.url}")
-    private String infoApiUrl;
+    private transient String infoApiUrl;
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {

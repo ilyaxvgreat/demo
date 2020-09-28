@@ -1,9 +1,15 @@
-    plugins {
+plugins {
+//    id 'pmd'
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
     id 'java'
     id "org.flywaydb.flyway"
 }
+
+//pmd {
+//    consoleOutput = true
+//    toolVersion = "6.14.0"
+//}
 
 group 'com.auth'
 version '0.0.1-SNAPSHOT'
@@ -11,8 +17,6 @@ version '0.0.1-SNAPSHOT'
 repositories {
     mavenCentral()
 }
-
-
 
 
 dependencies {

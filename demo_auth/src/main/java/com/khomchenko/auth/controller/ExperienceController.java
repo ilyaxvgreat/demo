@@ -26,6 +26,11 @@ public class ExperienceController {
         return experienceService.getById(experienceId);
     }
 
+    @GetMapping("/users/{userId}")
+    public List<Experience> getByUserId(@PathVariable Long userId) {
+        return experienceService.getExperienceByUserId(userId);
+    }
+
     @PostMapping
     public Experience saveExperience(@RequestBody Experience experience) {
         return experienceService.save(experience);

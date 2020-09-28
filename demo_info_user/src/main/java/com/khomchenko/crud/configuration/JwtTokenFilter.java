@@ -22,10 +22,10 @@ import java.util.Base64;
 public class JwtTokenFilter extends GenericFilterBean {
 
     @Value("${jwt.secret}")
-    private String secretKey;
+    private transient String secretKey;
 
     @Value("${jwt.header}")
-    private String authorizationHeader;
+    private transient String authorizationHeader;
 
     @PostConstruct
     protected void init() {

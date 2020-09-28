@@ -1,26 +1,31 @@
 package com.khomchenko.crud.configuration;
 
+import com.khomchenko.crud.dto.AuthenticationRequestDto;
 import com.khomchenko.crud.dto.AuthenticationsResponseDto;
 import com.khomchenko.crud.dto.UserDto;
+import com.khomchenko.crud.dto.UserExperienceDto;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+
 @Component
 public class MicroserviceRequestImpl implements MicroserviceRequest {
 
     @Value("${jwt.header}")
-    private String authorizationHeader;
+    private transient String authorizationHeader;
 
     @Value("${login.service.url}")
-    private String loginUrlApi;
+    private transient String loginUrlApi;
 
     @Value("${users.api.url}")
-    private String userApiUrl;
+    private transient String userApiUrl;
 
-    private final WebClient.Builder webClientBuilder;
+    private transient final WebClient.Builder webClientBuilder;
 
     public MicroserviceRequestImpl(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;
@@ -38,7 +43,18 @@ public class MicroserviceRequestImpl implements MicroserviceRequest {
     }
 
     @Override
-    public AuthenticationsResponseDto sendPostRequestForLogin(UserDto userDto) {
+    public List<UserExperienceDto> sendGetListRequest(String url, String jwt) {
+        return webClientBuilder.build()
+                .get()
+                .uri(url)
+                .header(authorizationHeader, jwt)
+                .retrieve()
+                .toEntityList(UserExperienceDto.class)
+                .block().getBody();
+    }
+
+    @Override
+    public AuthenticationsResponseDto sendPostRequestForLogin(AuthenticationRequestDto userDto) {
         return webClientBuilder.build()
                 .post()
                 .uri(loginUrlApi)
